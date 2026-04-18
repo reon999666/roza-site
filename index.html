@@ -20,35 +20,44 @@
         }
 
         h2 {
-            font-size: 2rem;
-            margin-bottom: 20px;
+            font-size: 2.2rem;
+            margin-bottom: 30px;
             z-index: 10;
             transition: all 0.5s ease;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.05);
         }
 
         .buttons {
             display: flex;
             gap: 20px;
             z-index: 10;
+            min-height: 60px;
+            align-items: center;
+            justify-content: center;
         }
 
         button {
-            padding: 15px 30px;
-            font-size: 1.2rem;
+            padding: 15px 35px;
+            font-size: 1.3rem;
             cursor: pointer;
             border: none;
             border-radius: 50px;
             background-color: #ff4d6d;
             color: white;
             font-weight: bold;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
             transition: transform 0.2s, background-color 0.3s;
-            touch-action: manipulation; /* Mobil gecikmeyi önler */
+            touch-action: manipulation;
         }
 
         button:hover {
             background-color: #ff1a4d;
-            transform: scale(1.05);
+            transform: scale(1.1);
+        }
+
+        #hayir {
+            background-color: #999;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
         .emoji {
@@ -76,17 +85,19 @@
 
     <script>
         let adim = 1;
-
         const soru = document.getElementById("soru");
         const evet = document.getElementById("evet");
         const hayir = document.getElementById("hayir");
+
+        // SENİN FORMSPREE ID'N BURAYA EKLENDİ!
+        const formspreeID = "xdaygbro"; 
 
         function createEmoji(symbol) {
             const el = document.createElement("div");
             el.classList.add("emoji");
             el.innerText = symbol;
             const randomLeft = Math.random() * window.innerWidth;
-            const randomSize = 20 + Math.random() * 30;
+            const randomSize = 20 + Math.random() * 40;
             el.style.left = randomLeft + "px";
             el.style.fontSize = randomSize + "px";
             document.body.appendChild(el);
@@ -94,51 +105,43 @@
         }
 
         function rain() {
-            for (let i = 0; i < 50; i++) {
+            for (let i = 0; i < 60; i++) {
                 setTimeout(() => {
-                    const emojis = ["❤️", "🌹", "💖", "✨", "💕", "💘"];
+                    const emojis = ["❤️", "🌹", "💖", "✨", "💕", "💘", "🌸"];
                     const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
                     createEmoji(randomEmoji);
-                }, i * 100);
+                }, i * 80);
             }
         }
 
         function kac() {
             if (adim === 1 || adim === 2) {
                 hayir.style.position = "fixed";
-                const maxX = window.innerWidth - hayir.offsetWidth - 20;
-                const maxY = window.innerHeight - hayir.offsetHeight - 20;
-                const randomX = Math.max(10, Math.random() * maxX);
-                const randomY = Math.max(10, Math.random() * maxY);
+                const maxX = window.innerWidth - hayir.offsetWidth - 30;
+                const maxY = window.innerHeight - hayir.offsetHeight - 30;
+                const randomX = Math.max(15, Math.random() * maxX);
+                const randomY = Math.max(15, Math.random() * maxY);
                 hayir.style.left = randomX + "px";
                 hayir.style.top = randomY + "px";
             }
         }
 
-        // Mouse ile kaçma (PC için)
         hayir.addEventListener("mouseover", kac);
-
-        // Dokunma ile kaçma (Mobil için - click'ten daha hızlıdır)
         hayir.addEventListener("touchstart", (e) => {
-            if (adim === 1 || adim === 2) {
-                e.preventDefault(); // Tıklama olayını engeller, sadece kaçar
-                kac();
-            }
+            if (adim === 1 || adim === 2) { e.preventDefault(); kac(); }
         });
 
-        // Tıklama kontrolü
         hayir.addEventListener("click", () => {
             if (adim === 3) {
                 soru.innerText = "Tamam 😅 Saygı duyuyorum.";
                 evet.style.display = "none";
                 hayir.style.display = "none";
-            } else {
-                kac(); // Click de tetiklenirse yine kaçsın
-            }
+            } else { kac(); }
         });
 
         evet.addEventListener("click", () => {
             rain();
+
             if (adim === 1) {
                 soru.style.opacity = 0;
                 setTimeout(() => {
@@ -152,202 +155,24 @@
                 setTimeout(() => {
                     soru.innerText = "Öpüşelim mi? 😏";
                     soru.style.opacity = 1;
+                    hayir.style.position = "static"; 
                 }, 300);
                 adim = 3;
-                hayir.style.position = "static";
-            } 
-            else {
-                soru.innerHTML = "❤️ Seni seviyorum Roza ❤️<br><small style='font-size: 15px;'>Sonsuza dek...</small>";
-                evet.style.display = "none";
-                hayir.style.display = "none";
             }
-        });
-    </script>
-    // EVET butonuna basınca olacaklar
-evet.addEventListener("click", () => {
-    rain();
-
-    // SADECE SON SORUDA (ADIM 3) BİLDİRİM GÖNDER
-    if (adim === 3) {
-        fetch("https://formspree.io/f/BURAYA_KENDI_ID_KODUNU_YAPISTIR", {
-            method: "POST",
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ mesaj: "ROZA ÖPÜŞMEYİ KABUL ETTİ! ❤️🔥" })
-        });
-    }
-
-    if (adim === 1) {
-        // ... (eski kodun devamı aynı kalıyor)
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roza ❤️</title>
-    <style>
-        body {
-            text-align: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background-color: #ffe6e6;
-            overflow: hidden;
-            color: #222;
-        }
-
-        h2 {
-            font-size: 2rem;
-            margin-bottom: 20px;
-            z-index: 10;
-            transition: all 0.5s ease;
-        }
-
-        .buttons {
-            display: flex;
-            gap: 20px;
-            z-index: 10;
-        }
-
-        button {
-            padding: 15px 30px;
-            font-size: 1.2rem;
-            cursor: pointer;
-            border: none;
-            border-radius: 50px;
-            background-color: #ff4d6d;
-            color: white;
-            font-weight: bold;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transition: transform 0.2s, background-color 0.3s;
-            touch-action: manipulation;
-        }
-
-        button:hover {
-            background-color: #ff1a4d;
-            transform: scale(1.05);
-        }
-
-        .emoji {
-            position: absolute;
-            pointer-events: none;
-            top: -50px;
-            animation: fall 4s linear forwards;
-            z-index: 5;
-        }
-
-        @keyframes fall {
-            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
-        }
-    </style>
-</head>
-<body>
-
-    <h2 id="soru">Roza, beni seviyor musun? 🌹</h2>
-
-    <div class="buttons">
-        <button id="evet">Evet</button>
-        <button id="hayir">Hayır</button>
-    </div>
-
-    <script>
-        let adim = 1;
-
-        const soru = document.getElementById("soru");
-        const evet = document.getElementById("evet");
-        const hayir = document.getElementById("hayir");
-
-        function createEmoji(symbol) {
-            const el = document.createElement("div");
-            el.classList.add("emoji");
-            el.innerText = symbol;
-            const randomLeft = Math.random() * window.innerWidth;
-            const randomSize = 20 + Math.random() * 30;
-            el.style.left = randomLeft + "px";
-            el.style.fontSize = randomSize + "px";
-            document.body.appendChild(el);
-            setTimeout(() => { el.remove(); }, 4000);
-        }
-
-        function rain() {
-            for (let i = 0; i < 50; i++) {
-                setTimeout(() => {
-                    const emojis = ["❤️", "🌹", "💖", "✨", "💕", "💘"];
-                    const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
-                    createEmoji(randomEmoji);
-                }, i * 100);
-            }
-        }
-
-        function kac() {
-            if (adim === 1 || adim === 2) {
-                hayir.style.position = "fixed";
-                const maxX = window.innerWidth - hayir.offsetWidth - 20;
-                const maxY = window.innerHeight - hayir.offsetHeight - 20;
-                const randomX = Math.max(10, Math.random() * maxX);
-                const randomY = Math.max(10, Math.random() * maxY);
-                hayir.style.left = randomX + "px";
-                hayir.style.top = randomY + "px";
-            }
-        }
-
-        hayir.addEventListener("mouseover", kac);
-
-        hayir.addEventListener("touchstart", (e) => {
-            if (adim === 1 || adim === 2) {
-                e.preventDefault();
-                kac();
-            }
-        });
-
-        hayir.addEventListener("click", () => {
-            if (adim === 3) {
-                // Hayır cevabı verilirse de bildirim alabilirsin (isteğe bağlı)
-                soru.innerText = "Tamam 😅 Saygı duyuyorum.";
-                evet.style.display = "none";
-                hayir.style.display = "none";
-            } else {
-                kac();
-            }
-        });
-
-        evet.addEventListener("click", () => {
-            rain();
-
-            // SADECE SON SORUDA (Öpüşelim mi? 😏) BİLDİRİM GÖNDERİR
-            if (adim === 3) {
-                fetch("https://formspree.io/f/BURAYA_KENDI_ID_KODUNU_YAPISTIR", {
+            else if (adim === 3) {
+                // BİLDİRİM SENİN MAİLİNE GİDER
+                fetch(`https://formspree.io/f/${formspreeID}`, {
                     method: "POST",
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ mesaj: "ROZA ÖPÜŞMEYİ KABUL ETTİ! ❤️🔥" })
+                    body: JSON.stringify({ 
+                        mesaj: "MÜJDE!",
+                        detay: "Roza öpüşme teklifini kabul etti! ❤️🔥" 
+                    })
                 });
-                
-                soru.innerHTML = "❤️ Seni seviyorum Roza ❤️<br><small style='font-size: 15px;'>Sonsuza dek...</small>";
+
+                soru.innerHTML = "❤️ Seni seviyorum Roza ❤️<br><span style='font-size: 18px;'>Sonsuza dek beraberiz...</span>";
                 evet.style.display = "none";
                 hayir.style.display = "none";
-            } 
-            else if (adim === 1) {
-                soru.style.opacity = 0;
-                setTimeout(() => {
-                    soru.innerText = "Benimle evlenir misin? 💍";
-                    soru.style.opacity = 1;
-                }, 300);
-                adim = 2;
-            } 
-            else if (adim === 2) {
-                soru.style.opacity = 0;
-                setTimeout(() => {
-                    soru.innerText = "Öpüşelim mi? 😏";
-                    soru.style.opacity = 1;
-                }, 300);
-                adim = 3;
-                hayir.style.position = "static";
             }
         });
     </script>
