@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roza ❤️</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #ffe6e6;
+            overflow: hidden;
+            color: #222;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            z-index: 10;
+            transition: all 0.5s ease;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 20px;
+            z-index: 10;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            border: none;
+            border-radius: 50px;
+            background-color: #ff4d6d;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.2s, background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #ff1a4d;
+            transform: scale(1.05);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        .emoji {
+            position: absolute;
+            pointer-events: none;
+            top: -50px;
+            animation: fall 4s linear forwards;
+            z-index: 5;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <h2 id="soru">Roza, beni seviyor musun? 🌹</h2>
+
+    <div class="buttons">
+        <button id="evet">Evet</button>
+        <button id="hayir">Hayır</button>
+    </div>
+
+    <script>
+        let adim = 1;
+
+        const soru = document.getElementById("soru");
+        const evet = document.getElementById("evet");
+        const hayir = document.getElementById("hayir");
+
+        // Emoji oluşturma fonksiyonu
+        function createEmoji(symbol) {
+            const el = document.createElement("div");
+            el.classList.add("emoji");
+            el.innerText = symbol;
+
+            const randomLeft = Math.random() * window.innerWidth;
+            const randomSize = 20 + Math.random() * 30;
+
+            el.style.left = randomLeft + "px";
+            el.style.fontSize = randomSize + "px";
+
+            document.body.appendChild(el);
+
+            setTimeout(() => {
+                el.remove();
+            }, 4000);
+        }
+
+        // Yağmur efekti
+        function rain() {
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const emojis = ["❤️", "🌹", "💖", "✨", "💕", "💘"];
+                    const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+                    createEmoji(randomEmoji);
+                }, i * 100);
+            }
+        }
+
+        // HAYIR butonunun kaçma mantığı
+        function kac() {
+            if (adim === 1 || adim === 2) {
+                hayir.style.position = "fixed";
+                
+                // Butonun ekran dışına taşmaması için sınırları hesapla
+                const maxX = window.innerWidth - hayir.offsetWidth - 20;
+                const maxY = window.innerHeight - hayir.offsetHeight - 20;
+
+                const randomX = Math.max(10, Math.random() * maxX);
+                const randomY = Math.max(10, Math.random() * maxY);
+
+                hayir.style.left = randomX + "px";
+                hayir.style.top = randomY + "px";
+            }
+        }
+
+        hayir.addEventListener("mouseover", kac);
+        hayir.addEventListener("click", () => {
+            if (adim === 3) {
+                soru.innerText = "Tamam 😅 Saygı duyuyorum.";
+                evet.style.display = "none";
+                hayir.style.display = "none";
+            } else {
+                kac(); // Mobilde üzerine gelme (hover) olmadığı için tıklayınca da kaçsın
+            }
+        });
+
+        // EVET butonuna basınca olacaklar
+        evet.addEventListener("click", () => {
+            rain();
+
+            if (adim === 1) {
+                soru.style.opacity = 0;
+                setTimeout(() => {
+                    soru.innerText = "Benimle evlenir misin? 💍";
+                    soru.style.opacity = 1;
+                }, 300);
+                adim = 2;
+            } 
+            else if (adim === 2) {
+                soru.style.opacity = 0;
+                setTimeout(() => {
+                    soru.innerText = "Öpüşelim mi? 😏";
+                    soru.style.opacity = 1;
+                }, 300);
+                adim = 3;
+                // 3. adımda kaçmayı durdur ve yerine geri getir
+                hayir.style.position = "static";
+            } 
+            else {
+                soru.innerHTML = "❤️ Seni seviyorum Roza ❤️<br><small style='font-size: 15px;'>Sonsuza dek...</small>";
+                evet.style.display = "none";
+                hayir.style.display = "none";
+            }
+        });
+    </script>
+
+</body>
+</html>
